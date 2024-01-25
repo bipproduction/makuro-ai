@@ -25,3 +25,9 @@ fetch('http://localhost:3000/ask', {
     })
 })
 ```
+
+### PM2
+
+```js
+pm2 start "node . start" --name "name"
+```
