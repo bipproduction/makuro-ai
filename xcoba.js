@@ -1,9 +1,9 @@
 const { fetch } = require('cross-fetch')
 
-fetch('http://localhost:3000/ask', {
+fetch('https://makuro-ai.wibudev.com/ask', {
     method: "POST",
     body: JSON.stringify({
-        q: "kapan hari raya",
+        q: "siapa tom lembong",
         n: false
     }),
     headers: {

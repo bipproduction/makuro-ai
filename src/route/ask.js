@@ -7,7 +7,6 @@ module.exports = async function (req, res, pb) {
         message: "require question"
     })
 
-
     const hasil = await new Promise(async (a, b) => {
         if (!pb.page) return res.send("null page")
         const page = pb.page
@@ -44,7 +43,7 @@ module.exports = async function (req, res, pb) {
                     const flt = _.flattenDeep(data_body)
                     const data = flt.find((v) => (v ?? "").length > 50)
                     const data2 = _.flattenDeep(JSON.parse(data)).find((v) => (v ?? "").length > 50)
-                    res.write(data2)
+                    // res.write(data2)
                     a(data2)
                 } catch (error) {
 
@@ -54,5 +53,6 @@ module.exports = async function (req, res, pb) {
         });
 
     })
-    res.end()
+    
+    res.send(hasil)
 }
