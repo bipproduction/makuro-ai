@@ -6,9 +6,10 @@ pluginStealth.setMaxListeners = () => { };
 const path = require('path')
 const fs = require('fs')
 const { execSync } = require('child_process')
+const os = require('os')
 
 module.exports = async function ({ page, browser }) {
-    const headless = execSync('hostname').toString().trim() !== "bips-MacBook-Air.local"
+    const headless = os.hostname() == "bips-MacBook-Air.local" ? false : "new"
     if (!page) {
         browser = await puppeteer.launch({
             executablePath: await chromium.executablePath,
