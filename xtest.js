@@ -2,7 +2,10 @@ const puppeteer = require('puppeteer');
 
 (async () => {
   // Membuka browser
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox'] ,
+    headless: "new"
+  });
 
   // Membuka halaman baru
   const page = await browser.newPage();
