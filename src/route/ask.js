@@ -51,8 +51,12 @@ module.exports = async function (req, res, pb) {
     // const data = flt.find((v) => (v ?? "").length > 50)
     // const data2 = _.flattenDeep(JSON.parse(data)).find((v) => (v ?? "").length > 50)
 
-    const fd = _.flattenDeep(hasil).find((v) => `${v}`.length > 50)
-    const fd2 = _.flatMapDeep(JSON.parse(fd))
-    const final_data = fd2.find(v => `${v}`.length > 50)
-    res.send(final_data)
+    try {
+        const fd = _.flattenDeep(hasil).find((v) => `${v}`.length > 50)
+        const fd2 = _.flatMapDeep(JSON.parse(fd))
+        const final_data = fd2.find(v => `${v}`.length > 50)
+        return res.send(final_data)
+    } catch (error) {
+        return res.send('error')
+    }
 }
