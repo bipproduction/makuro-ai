@@ -38,21 +38,21 @@ module.exports = async function (req, res, pb) {
 
                     }
                 }
-
-                try {
-                    const flt = _.flattenDeep(data_body)
-                    const data = flt.find((v) => (v ?? "").length > 50)
-                    const data2 = _.flattenDeep(JSON.parse(data)).find((v) => (v ?? "").length > 50)
-                    // res.write(data2)
-                    a(data2)
-                } catch (error) {
-
+                await new Promise((r) => setTimeout(r, 5000))
+                if (response.ok()) {
+                    a(data_body)
                 }
-
             }
         });
 
     })
-    
-    res.send(hasil)
+
+    // const flt = _.flattenDeep(hasil)
+    // const data = flt.find((v) => (v ?? "").length > 50)
+    // const data2 = _.flattenDeep(JSON.parse(data)).find((v) => (v ?? "").length > 50)
+
+    const fd = _.flattenDeep(hasil).find((v) => `${v}`.length > 50)
+    const fd2 = _.flatMapDeep(JSON.parse(fd))
+    const final_data = fd2.find(v => `${v}`.length > 50)
+    res.send(final_data)
 }
