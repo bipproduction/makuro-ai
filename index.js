@@ -45,7 +45,10 @@ async function funStart(argv) {
     await funLoadBox()
 
     app.get('/sk', funSk)
-    app.post('/ask', async (req, res) => await route.ask(req, res, pb))
+    app.post('/ask', async (req, res) => {
+        const { time_out } = req.query
+        return await route.ask(req, res, pb, time_out ?? 15000)
+    })
     app.get('/scr', async (req, res) => await route.scr(req, res, pb))
 
     app.listen(argv.port, () => console.log(box(`server berjalan di port ${argv.port}`)))

@@ -1,5 +1,5 @@
 const _ = require('lodash')
-module.exports = async function (req, res, pb) {
+module.exports = async function (req, res, pb, time_out) {
     let data_body = [];
     const body = req.body
     if (!body || _.isEmpty(body.q)) return res.send({
@@ -38,7 +38,7 @@ module.exports = async function (req, res, pb) {
 
                     }
                 }
-                await new Promise((r) => setTimeout(r, 5000))
+
                 if (response.ok()) {
                     a(data_body)
                 }
@@ -47,10 +47,7 @@ module.exports = async function (req, res, pb) {
 
     })
 
-    // const flt = _.flattenDeep(hasil)
-    // const data = flt.find((v) => (v ?? "").length > 50)
-    // const data2 = _.flattenDeep(JSON.parse(data)).find((v) => (v ?? "").length > 50)
-
+    await new Promise((r) => setTimeout(r, time_out))
     try {
         const fd = _.flattenDeep(hasil).find((v) => `${v}`.length > 50)
         const fd2 = _.flatMapDeep(JSON.parse(fd))

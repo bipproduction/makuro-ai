@@ -16,6 +16,12 @@ const puppeteer = require('puppeteer');
   // Mengambil tangkapan layar
   await page.screenshot({ path: 'example.png' });
 
+  await page.on("response", async (data) => {
+    await data.buffer().on("data", (d) => {
+        
+    })
+  })
+
   // Menutup browser
   await browser.close();
 })();
