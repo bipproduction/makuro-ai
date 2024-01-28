@@ -25,7 +25,7 @@ module.exports = async function ({ page, browser }) {
         await page.setViewport({ width: 530, height: 720 });
         await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-        const cookie = JSON.parse(fs.readFileSync(path.join(__dirname, "k.json")))
+        const cookie = JSON.parse(fs.readFileSync(path.join(__dirname, "./../../ast/cookies.json")))
         await page.setCookie(...cookie)
         await page.goto('https://bard.google.com/chat')
         return { page, browser }
