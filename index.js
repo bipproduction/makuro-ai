@@ -52,8 +52,8 @@ async function funStart(argv) {
     app.get('/scr', async (req, res) => await route.scr(req, res, pb))
 
     app.listen(argv.port, () => console.log(box(`server berjalan di port ${argv.port}`)))
-}
 
+}
 
 async function funSk(req, res) {
     const user_cookie = await pb.page.cookies()
