@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
 const route = require('./src/route');
+const ask_ai = require('./src/fun/ask_ai');
 let box;
 app.use(expres.json())
 app.use(expres.urlencoded({ extended: true }))
@@ -47,10 +48,24 @@ async function funStart(argv) {
     app.get('/sk', funSk)
     app.post('/ask', async (req, res) => {
         const { time_out } = req.query
-        return await route.ask(req, res, pb, time_out ?? 15000)
+        return await route.ask(req, res, pb, time_out ?? 20000)
     })
-    app.get('/scr', async (req, res) => await route.scr(req, res, pb))
 
+    app.get('/ask-ai', async (req, res) => {
+        const { time_out, q } = req.query
+        if (!q) return res.send("q required")
+        const result = await ask_ai({
+            pb,
+            q,
+            time_out
+        })
+
+        res.setHeader("Content-Type", "text/html; charset=utf-8")
+
+        return res.send(result)
+    })
+
+    app.get('/scr', async (req, res) => await route.scr(req, res, pb))
     app.listen(argv.port, () => console.log(box(`server berjalan di port ${argv.port}`)))
 }
 
@@ -65,4 +80,6 @@ async function funSk(req, res) {
 async function funLoadBox() {
     box = (await import('boxen')).default
 }
+
+// //*[@id="chat-history"]/infinite-scroller/div[3]/model-response/div/response-container/div/div[2]/div[2]
 

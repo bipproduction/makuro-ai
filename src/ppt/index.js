@@ -17,7 +17,8 @@ module.exports = async function ({ page, browser }) {
             ignoreHTTPSErrors: true,
             args: [`
             --window-size=530,1280`,
-                '--no-sandbox'
+                '--no-sandbox',
+                '--disable-popup-blocking'
             ]
         })
         page = (await browser.pages())[0]
