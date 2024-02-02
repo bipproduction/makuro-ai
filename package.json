@@ -12,10 +12,12 @@
     "lodash": "^4.17.21",
     "log-update": "^6.0.0",
     "markdown-it": "^14.0.0",
+    "markdown-table-prettify": "^3.6.0",
     "puppeteer": "^21.7.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "turndown": "^7.1.2",
+    "turndown-plugin-gfm": "^1.0.2",
     "user-agents": "^1.1.94",
     "yargs": "^17.7.2"
   }

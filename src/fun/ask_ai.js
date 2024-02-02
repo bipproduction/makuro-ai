@@ -1,6 +1,12 @@
 const _ = require('lodash')
 const puppeteer = require('puppeteer')
 const cheerio = require('cheerio');
+const md = new (require('turndown'))()
+const TurndownService = require('turndown')
+var tables = require('turndown-plugin-gfm').tables
+var turndownService = new TurndownService()
+turndownService.use(tables)
+const { CliPrettify } = require('markdown-table-prettify')
 
 module.exports = async function ({ pb, time_out, q, n, log } = {
     pb: {
@@ -49,27 +55,11 @@ module.exports = async function ({ pb, time_out, q, n, log } = {
         const html = await page.evaluate(element => element.innerHTML, lastElement);
         const $ = cheerio.load(html);
         const table = $('table');
-        return `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Document</title>
-            <style>
-                body {
-                    background-color: black; /* Tidak perlu tanda kutip pada nilai warna */
-                    color: white;
-                }
-            </style>
-        </head>
-        <body>
-            <pre>
-                <table>${table.html()}</table>
-            </pre>
-        </body>
-        </html>
+        const result = `
+        <table>${table.html()}</table>
         `
+
+        return CliPrettify.prettify(turndownService.turndown(result))
     } else {
         console.log('Tidak ada elemen yang ditemukan dengan XPath tersebut.');
         return "null"
