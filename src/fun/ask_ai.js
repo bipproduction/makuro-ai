@@ -53,15 +53,13 @@ module.exports = async function ({ pb, time_out, q, n, log } = {
         const lastElement = elements[count - 1];
         const html = await page.evaluate(element => element.innerHTML, lastElement);
         const $ = cheerio.load(html);
-        const table = $('table');
+        const tables = $('table'); // Mengambil semua tabel
+        const lastTable = tables.last(); // Mengambil tabel terakhir
         const result = `
-        <table>${table.html()}</table>
-        `
+        <table>${lastTable.html()}</table>
+        `;
 
-        return {
-            md: CliPrettify.prettify(turndownService.turndown(result)),
-            html
-        }
+        return CliPrettify.prettify(turndownService.turndown(result))
     } else {
         console.log('Tidak ada elemen yang ditemukan dengan XPath tersebut.');
         return "null"
