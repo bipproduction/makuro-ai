@@ -13,6 +13,7 @@
     "log-update": "^6.0.0",
     "markdown-it": "^14.0.0",
     "markdown-table-prettify": "^3.6.0",
+    "playwright": "^1.41.2",
     "puppeteer": "^21.7.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",

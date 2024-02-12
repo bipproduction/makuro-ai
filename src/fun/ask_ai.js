@@ -43,8 +43,7 @@ module.exports = async function ({ pb, time_out, q, n, log } = {
     await new Promise(r => setTimeout(r, 1000))
     await page.click('.send-button-container');
 
-
-    await new Promise(r => setTimeout(r, 15000))
+    await new Promise(r => setTimeout(r, time_out))
     await page.waitForXPath('//*[@id="chat-history"]/infinite-scroller/div');
     const elements = await page.$x('//*[@id="chat-history"]/infinite-scroller/div');
 

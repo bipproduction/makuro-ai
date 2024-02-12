@@ -8,20 +8,10 @@ const fs = require('fs');
 const _ = require('lodash');
 const route = require('./src/route');
 const ask_ai = require('./src/fun/ask_ai');
+var pb = require('./src/def/pb');
 let box;
 app.use(expres.json())
 app.use(expres.urlencoded({ extended: true }))
-
-/**
- * @type {{
- * page: puppeteer.Page,
- * browser: puppeteer.Browser
- * }}
- */
-let pb = {
-    page: null,
-    browser: null
-}
 
 yargs
     .command(
@@ -41,7 +31,7 @@ yargs
     .parse(process.argv.splice(2))
 
 async function funStart(argv) {
-    pb = await ppt(pb, "")
+    if (!pb.page) pb = await ppt(pb)
 
     await funLoadBox()
 
