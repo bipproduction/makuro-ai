@@ -59,7 +59,7 @@ module.exports = async function ({ pb, time_out, q, n, log } = {
         <table>${lastTable.html()}</table>
         `;
 
-        return result
+        return CliPrettify.prettify(turndownService.turndown(result))
     } else {
         console.log('Tidak ada elemen yang ditemukan dengan XPath tersebut.');
         return "null"
