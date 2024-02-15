@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controll</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="gambar" src="/view" width="414px" height="715px" />
+    <script>
+        const gam = $('#gambar')
+        // get x and y on click
+        gam.on('click', function (e) {
+            try {
+                $.get(`/click/${e.clientX}/${e.clientY}`, (data) => {
+                    $.get('/ss', function (data) {
+                        const timestamp = new Date().getTime();
+                        gam.attr('src', `/view?${timestamp}`)
+                    })
+                })
+            } catch (error) {
+                console.log("error")
+            }
+
+        })
+
+        setInterval(() => {
+            console.log("upadte")
+            try {
+                $.get('/ss', function (data) {
+                    const timestamp = new Date().getTime();
+                    gam.attr('src', `/view?${timestamp}`)
+                })
+            } catch (error) {
+                console.log("error")
+            }
+        }, 500);
+
+    </script>
+</body>
+
+</html>

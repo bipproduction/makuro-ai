@@ -1,17 +1,15 @@
-const puppeteer = require('puppeteer');
 const expres = require('express');
 const yargs = require('yargs');
-const ppt = require('./src/ppt');
 const app = expres();
 const path = require('path');
 const fs = require('fs');
-const _ = require('lodash');
-const route = require('./src/route');
-const ask_ai = require('./src/fun/ask_ai');
 var pb = require('./src/def/pb');
+const { event } = require('./src/fun/event');
+const play = require('./src/play');
 let box;
 app.use(expres.json())
 app.use(expres.urlencoded({ extended: true }))
+app.use(expres.static(path.join(__dirname, './public')))
 
 yargs
     .command(
@@ -31,45 +29,55 @@ yargs
     .parse(process.argv.splice(2))
 
 async function funStart(argv) {
-    if (!pb.page) pb = await ppt(pb)
 
-    await funLoadBox()
+    if (!pb.page) pb = await play(pb)
 
-    app.get('/sk', funSk)
-    app.post('/ask', async (req, res) => {
-        const { time_out } = req.query
-        return await route.ask(req, res, pb, time_out ?? 20000)
+
+    app.get("/save-cookies", (req, res) => {
+        event.emit("save-cookies", true)
+        return res.send("save_cookies: success")
     })
 
-    app.get('/ask-ai', async (req, res) => {
-        const { time_out, q } = req.query
-        if (!q) return res.send("q required")
-        const result = await ask_ai({
-            pb,
-            q,
-            time_out
+    app.get('/tanya', async (req, res) => {
+        let jawaban = ""
+        const data = {
+            q: req.query.q,
+            tunggu: req.query.tunggu ?? 10000,
+            jenis: req.query.jenis ?? "table"
+        }
+
+        event.emit("tanya", data)
+
+        event.on("jawaban", async (data) => {
+            res.write(jawaban)
+            await new Promise(resolve => setTimeout(resolve, 100));
+            return res.end()
         })
 
-        res.setHeader("Content-Type", "text/html; charset=utf-8")
-
-        return res.send(result)
     })
 
-    app.get('/scr', async (req, res) => await route.scr(req, res, pb))
-    app.listen(argv.port, () => console.log(box(`server berjalan di port ${argv.port}`)))
+    app.get('/ss', (req, res) => {
+        event.emit("ss", true)
+        res.setHeader("Content-Type", "image/png")
+        return res.sendFile(path.join(__dirname, './src/play/assets/ss.png'))
+    })
+
+    app.get('/view', (req, res) => {
+        res.setHeader("Content-Type", "image/png")
+        return res.sendFile(path.join(__dirname, './src/play/assets/ss.png'))
+    })
+
+    app.get('/controll', (req, res) => {
+        res.setHeader("Content-Type", "text/html; charset=utf-8")
+        res.sendFile(path.join(__dirname, './public/controll.html'))
+    })
+
+    app.get('/click/:x/:y', (req, res) => {
+        const { x, y } = req.params
+        event.emit("click", { x, y })
+        return res.send("click: success")
+    })
+
+    app.listen(argv.port, () => console.log(`server berjalan di port ${argv.port}`))
 }
-
-async function funSk(req, res) {
-    const user_cookie = await pb.page.cookies()
-    await fs.promises.writeFile(path.join(__dirname, "./ast/cookies.json"), JSON.stringify(user_cookie))
-    console.log("cookie saved")
-    return res.send(box("success"))
-}
-
-
-async function funLoadBox() {
-    box = (await import('boxen')).default
-}
-
-// //*[@id="chat-history"]/infinite-scroller/div[3]/model-response/div/response-container/div/div[2]/div[2]
 
