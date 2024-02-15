@@ -38,8 +38,6 @@ module.exports = async function () {
                 circle.style.top = `${data.y - 10}px`;
                 circle.style.left = `${data.x - 10}px`;
                 document.body.appendChild(circle);
-                // const c = document.getElementById('circle')
-                // remove circle after 100
                 setTimeout(() => {
                     circle.remove()
                 }, 100)
@@ -50,12 +48,7 @@ module.exports = async function () {
         }, data)
         await page.mouse.click((+x), (+y))
 
-
     })
-
-    // page.on('response', async (request) => {
-    //     await screenshot(page)
-    // })
 
     // load cookies
     if (fs.existsSync(path.join(__dirname, './cookies.json'))) {
@@ -80,25 +73,26 @@ module.exports = async function () {
         try {
             const { q, tunggu, jenis } = data
             const editorSelector = '.ql-editor';
-            await page.type(editorSelector, q);
+            await page.locator(editorSelector).fill(q);
             await page.waitForSelector('.send-button-container');
             await page.click('.send-button-container');
-            await page.waitForTimeout(tunggu);
+
+            await page.waitForTimeout(+tunggu);
 
             const html = await page.content();
-
-            const markdown_table = htmlToMarkdownTable(html);
-            const markdownText = htmlToMarkdownText(html);
-
             if (jenis === "table") {
-                event.emit("jawaban", markdown_table);
+                const markdown_table = htmlToMarkdownTable(html);
+                event.emit("jawaban:success", markdown_table);
             }
 
             if (jenis === "text") {
-                event.emit("jawaban", markdownText);
+                const markdownText = htmlToMarkdownText(html);
+                event.emit("jawaban:success", markdownText);
             }
+
         } catch (error) {
-            event.emit("jawaban", "error");
+            console.log(error)
+            event.emit("jawaban:error", "error");
         }
 
     })

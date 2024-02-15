@@ -43,17 +43,22 @@ async function funStart(argv) {
         const data = {
             q: req.query.q,
             tunggu: req.query.tunggu ?? 10000,
-            jenis: req.query.jenis ?? "table"
+            jenis: req.query.jenis ?? "text"
         }
 
         event.emit("tanya", data)
 
-        event.on("jawaban", async (data) => {
-            res.write(jawaban)
-            await new Promise(resolve => setTimeout(resolve, 100));
-            return res.end()
+        event.on("jawaban:success", async (data) => {
+            jawaban = data
         })
 
+        event.on("jawaban:error", (data) => {
+            console.log(jawaban)
+        })
+
+        await new Promise(resolve => setTimeout(resolve, data.tunggu + 1000));
+        res.write(jawaban)
+        return res.end()
     })
 
     app.get('/ss', (req, res) => {
