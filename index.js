@@ -57,7 +57,7 @@ async function funStart(argv) {
         })
 
         await new Promise(resolve => setTimeout(resolve, data.tunggu + 1000));
-        res.write(jawaban)
+        res.send(jawaban)
         return res.end()
     })
 
