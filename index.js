@@ -6,7 +6,6 @@ const fs = require('fs');
 var pb = require('./src/def/pb');
 const { event } = require('./src/fun/event');
 const play = require('./src/play');
-let box;
 app.use(expres.json())
 app.use(expres.urlencoded({ extended: true }))
 app.use(expres.static(path.join(__dirname, './public')))
@@ -42,8 +41,7 @@ async function funStart(argv) {
         let jawaban = ""
         const data = {
             q: req.query.q,
-            tunggu: req.query.tunggu ?? 10000,
-            jenis: req.query.jenis ?? "text"
+            jenis: req.query.jenis ?? "table"
         }
 
         event.emit("tanya", data)
@@ -56,7 +54,17 @@ async function funStart(argv) {
             console.log(jawaban)
         })
 
-        await new Promise(resolve => setTimeout(resolve, data.tunggu + 1000));
+        let tunggu = "";
+        await new Promise(resolve => {
+            const interval = setInterval(() => {
+                tunggu += "."
+                res.send(tunggu)
+                if (jawaban) {
+                    clearInterval(interval)
+                    resolve()
+                }
+            })
+        }, 1000);
         res.send(jawaban)
         return res.end()
     })
