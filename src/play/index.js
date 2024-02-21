@@ -10,7 +10,7 @@ turndownService.use(tables);
 const { CliPrettify } = require('markdown-table-prettify')
 
 module.exports = async function () {
-    const browser = await webkit.launch({ headless: true });
+    const browser = await webkit.launch({ headless: false });
     const context = await browser.newContext({
         ...devices['iPhone 11'],
         locale: 'ID',

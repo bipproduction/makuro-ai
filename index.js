@@ -37,36 +37,28 @@ async function funStart(argv) {
         return res.send("save_cookies: success")
     })
 
+    let in_use = false
     app.get('/tanya', async (req, res) => {
-        let jawaban = ""
+        if (in_use) return res.send("please wait app is in use by another user")
+        in_use = true
         const data = {
             q: req.query.q,
+            tunggu: req.query.tunggu ?? 10000,
             jenis: req.query.jenis ?? "table"
         }
 
         event.emit("tanya", data)
 
         event.on("jawaban:success", async (data) => {
-            jawaban = data
+            in_use = false
+            res.end(data)
         })
 
         event.on("jawaban:error", (data) => {
-            console.log(jawaban)
+            console.log(data)
+            in_use = false
+            res.end("error")
         })
-
-        let tunggu = "";
-        await new Promise(resolve => {
-            const interval = setInterval(() => {
-                tunggu += "."
-                res.send(tunggu)
-                if (jawaban) {
-                    clearInterval(interval)
-                    resolve()
-                }
-            })
-        }, 1000);
-        res.send(jawaban)
-        return res.end()
     })
 
     app.get('/ss', (req, res) => {
